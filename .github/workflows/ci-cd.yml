@@ -13,22 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-        - name: Install Ansible
-          run: |
-            sudo apt update
-            sudo apt install -y ansible
-
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
 
       - name: Set up SSH access
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.WSL_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
-      - name: Install Ansible
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
 
       - name: Deploy React app using Ansible
         env:
@@ -37,6 +31,3 @@ jobs:
           ansible-playbook ansible/deploy_react.yml -i "172.24.53.233,"
       - name: List files in repository
         run: ls -R
-
-
-
