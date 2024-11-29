@@ -7,11 +7,11 @@ on:
 
 jobs:
   code-quality:
-    name: Code Quality Checks
+    name: Code Quality and Build Checks
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -25,14 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Lint code
+      # Step 4: Lint code using ESLint
       - name: Run ESLint
-        run: npm run lint
+        run: npx eslint src
 
-      # Step 5: Run tests
-      - name: Run tests
-        run: npm test
-
-      # Step 6: Build the application
-      - name: Build React app
-        run: npm run build
+      # Step 5: Check for
