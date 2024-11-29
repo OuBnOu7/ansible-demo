@@ -13,6 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+        - name: Install Ansible
+          run: |
+            sudo apt update
+            sudo apt install -y ansible
+
+
       - name: Set up SSH access
         run: |
           mkdir -p ~/.ssh
@@ -28,4 +34,9 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook .github/workflows/deploy_react.yml -i "172.24.53.233,"
+          ansible-playbook ansible/deploy_react.yml -i "172.24.53.233,"
+      - name: List files in repository
+        run: ls -R
+
+
+
