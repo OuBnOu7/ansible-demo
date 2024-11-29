@@ -1,0 +1,56 @@
+- hosts: all
+  become: yes
+  tasks:
+    # Step 1: Install Node.js and npm
+    - name: Install Node.js and npm
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+
+    # Step 2: Install Nginx
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    # Step 3: Clone or pull the React app repository
+    - name: Clone React app repository
+      git:
+        repo: "https://github.com/<your-username>/my-react-app.git"
+        dest: /var/www/react-app
+        version: main
+
+    # Step 4: Install dependencies for the React app
+    - name: Install React app dependencies
+      command: npm install
+      args:
+        chdir: /var/www/react-app
+
+    # Step 5: Build the React app
+    - name: Build the React app
+      command: npm run build
+      args:
+        chdir: /var/www/react-app
+
+    # Step 6: Configure Nginx to serve the React app
+    - name: Configure Nginx
+      copy:
+        dest: /etc/nginx/sites-available/react-app
+        content: |
+          server {
+            listen 80;
+            server_name localhost;
+
+            location / {
+              root /var/www/react-app/build;
+              index index.html;
+              try_files $uri /index.html;
+            }
+          }
+
+    # Step 7: Enable Nginx site and restart Nginx
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx
