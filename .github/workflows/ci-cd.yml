@@ -28,4 +28,4 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook deploy_react.yml -i "172.24.53.233,"
+          ansible-playbook .github/workflows/deploy_react.yml -i "172.24.53.233,"
