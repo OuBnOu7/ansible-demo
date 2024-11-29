@@ -10,24 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Step 2: List files for debugging (optional)
+      - name: List files in the repository
+        run: ls -R
+
+      # Step 3: Install Ansible on the runner
       - name: Install Ansible
         run: |
           sudo apt update
           sudo apt install -y ansible
 
+      # Step 4: Set up SSH access to the WSL server
       - name: Set up SSH access
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.WSL_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+      # Step 5: Run the Ansible playbook to deploy the React app
       - name: Deploy React app using Ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           ansible-playbook ansible/deploy_react.yml -i "172.24.53.233,"
-      - name: List files in repository
-        run: ls -R
