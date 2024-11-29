@@ -1,4 +1,4 @@
-name: CI/CD for React App
+name: CI Pipeline for React App
 
 on:
   push:
@@ -6,34 +6,33 @@ on:
       - main
 
 jobs:
-  deploy:
+  code-quality:
+    name: Code Quality Checks
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
+      # Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: List files for debugging (optional)
-      - name: List files in the repository
-        run: ls -R
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
 
-      # Step 3: Install Ansible on the runner
-      - name: Install Ansible
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
 
-      # Step 4: Set up SSH access to the WSL server
-      - name: Set up SSH access
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.WSL_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      # Step 4: Lint code
+      - name: Run ESLint
+        run: npm run lint
 
-      # Step 5: Run the Ansible playbook to deploy the React app
-      - name: Deploy React app using Ansible
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
-        run: |
-          ansible-playbook ansible/deploy_react.yml -i "172.24.53.233,"
+      # Step 5: Run tests
+      - name: Run tests
+        run: npm test
+
+      # Step 6: Build the application
+      - name: Build React app
+        run: npm run build
