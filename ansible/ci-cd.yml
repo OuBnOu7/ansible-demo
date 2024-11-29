@@ -19,8 +19,13 @@ jobs:
           echo "${{ secrets.WSL_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Deploy React app using Ansible
+      - name: Install Ansible
         run: |
-          ansible-playbook deploy_react.yml -i "172.24.53.233"
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Deploy React app using Ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          ansible-playbook .github/workflows/deploy_react.yml -i "172.24.53.233,"
