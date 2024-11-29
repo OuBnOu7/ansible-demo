@@ -1,0 +1,26 @@
+name: CI/CD for React App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.WSL_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy React app using Ansible
+        run: |
+          ansible-playbook deploy_react.yml -i "172.24.53.233"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
